@@ -7,6 +7,7 @@ import Loading from "./components/Loading";
 import MessageBox from "./components/MessageBox";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
+import Expense from "./pages/Expenses"
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectAppLoading } from "./store/appState/selectors";
@@ -18,11 +19,7 @@ const Home = () => (
     <h1>Home</h1>
   </Jumbotron>
 );
-const Other = () => (
-  <Jumbotron>
-    <h1>Other</h1>
-  </Jumbotron>
-);
+
 
 function App() {
   const dispatch = useDispatch();
@@ -39,7 +36,7 @@ function App() {
       {isLoading ? <Loading /> : null}
       <Routes>
         <Route exact path='/' element={<Home />} />
-        <Route path='/other' element={<Other />} />
+        <Route path='/expenses' element={<Expense />} />
         <Route path='/signup' element={<SignUp />} />
         <Route path='/login' element={<Login />} />
       </Routes>
