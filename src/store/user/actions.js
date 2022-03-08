@@ -8,6 +8,8 @@ import {
   setMessage,
 } from "../appState/actions";
 
+import { selectUser } from "./selectors";
+
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const TOKEN_STILL_VALID = "TOKEN_STILL_VALID";
 export const LOG_OUT = "LOG_OUT";
@@ -106,6 +108,65 @@ export const getUserWithStoredToken = () => {
       // get rid of the token by logging out
       dispatch(logOut());
       dispatch(appDoneLoading());
+    }
+  };
+};
+
+export const getMe = (meData) => ({
+  type: "user/getMe",
+  payload: meData,
+});
+
+export const fetchMe = (id) => {
+  return async (dispatch, getState) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      console.log("fetch data by id", response);
+      dispatch(getMe(response.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const addExpense = (data) => ({
+  type: "user/addExpense",
+  payload: data,
+});
+
+export const createExpense = (
+  description,
+  date,
+  amount,
+  status,
+  category,
+  payment_type
+) => {
+  return async (dispatch, getState) => {
+    try {
+      const user = selectUser(getState());
+      const userId = user.userWithExpenses.id;
+      const response = await axios.post(
+        `http://localhost:4000/expense/post/${userId}`,
+        { description, date, amount, status, category, payment_type },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("response create story", response.data);
+
+      dispatch(addExpense(response.data));
+      dispatch(
+        showMessageWithTimeout("Posted", false, "Posted Succesfully", 1500)
+      );
+    } catch (error) {
+      console.log(error);
     }
   };
 };
