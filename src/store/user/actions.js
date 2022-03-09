@@ -96,7 +96,7 @@ export const getUserWithStoredToken = () => {
       });
 
       // token is still valid
-      dispatch(tokenStillValid(response.data));
+      dispatch(tokenStillValid(response.data.userWithExpenses));
       dispatch(appDoneLoading());
     } catch (error) {
       if (error.response) {
@@ -112,26 +112,28 @@ export const getUserWithStoredToken = () => {
   };
 };
 
-export const getMe = (meData) => ({
-  type: "user/getMe",
-  payload: meData,
-});
+// export const getMe = (meData) => ({
+//   type: "user/getMe",
+//   payload: meData,
+// });
 
-export const fetchMe = (id) => {
-  return async (dispatch, getState) => {
-    try {
-      const response = await axios.get(`http://localhost:4000/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      console.log("fetch data by id", response);
-      dispatch(getMe(response.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
+// export const fetchMe = (id) => {
+//   return async (dispatch, getState) => {
+//     try {
+//       const response = await axios.get(`http://localhost:4000/auth/me`, {
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         },
+//       });
+//       const user = response.data;
+//       const token = localStorage.getItem("token");
+//       console.log("fetch data by id", response);
+//       dispatch(loginSuccess({ token, user }));
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+// };
 
 export const addExpense = (data) => ({
   type: "user/addExpense",
@@ -149,7 +151,7 @@ export const createExpense = (
   return async (dispatch, getState) => {
     try {
       const user = selectUser(getState());
-      const userId = user.userWithExpenses.id;
+      const userId = user.id;
       const response = await axios.post(
         `http://localhost:4000/expense/post/${userId}`,
         { description, date, amount, status, category, payment_type },
@@ -163,7 +165,43 @@ export const createExpense = (
 
       dispatch(addExpense(response.data));
       dispatch(
-        showMessageWithTimeout("Posted", false, "Posted Succesfully", 1500)
+        showMessageWithTimeout(
+          "Posted",
+          false,
+          "Added Expense Succesfully",
+          1500
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const editBalance = (data) => ({
+  type: "user/editBalance",
+  payload: data,
+});
+
+export const changeBalance = (balance) => {
+  return async (dispatch, getState) => {
+    try {
+      console.log("Getting to the action");
+      const user = selectUser(getState());
+      const userId = user.id;
+      const response = await axios.patch(
+        `http://localhost:4000/expense/editbalance/${userId}`,
+        { balance },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      dispatch(editBalance(response.data));
+      dispatch(
+        showMessageWithTimeout("Posted", false, "Balance Changed", 1500)
       );
     } catch (error) {
       console.log(error);

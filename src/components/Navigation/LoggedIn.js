@@ -14,6 +14,19 @@ export default function LoggedIn() {
       <NavLink
         style={{
           display: "flex",
+          justifyContent: "space-between ",
+          alignItems: "center",
+          textDecoration: "none",
+          marginRight: "200px",
+          color: "black",
+        }}
+        to={"/dashboard"}
+      >
+        Dashboard{" "}
+      </NavLink>
+      <NavLink
+        style={{
+          display: "flex",
           justifyContent: "center",
           alignItems: "center",
           textDecoration: "none",

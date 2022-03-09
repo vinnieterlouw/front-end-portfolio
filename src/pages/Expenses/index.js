@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { fetchMe } from "../../store/user/actions";
-import { selectMe } from "../../store/user/selectors";
-import { createExpense } from "../../store/user/actions";
+import { useState } from "react";
+import { selectMe, selectUser } from "../../store/user/selectors";
+import { changeBalance, createExpense } from "../../store/user/actions";
+import "../Expenses/expense.css";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { TextField } from "@mui/material";
@@ -10,9 +10,13 @@ import { Autocomplete } from "@mui/material";
 
 export default function Expenses() {
   const dispatch = useDispatch();
-  const user = useSelector(selectMe);
+  const me = useSelector(selectMe);
+  const user = useSelector(selectUser);
 
-  const optionsStatus = ["Necessary", "Somewhat necessary", "Not necessary"];
+  const spendByUser = me?.map((user) => parseInt(user.amount));
+  const totalSpend = spendByUser?.reduce((a, b) => a + b, 0);
+
+  const optionsStatus = ["Needs", "Wants", "Savings"];
   const optionsCategory = [
     "Clothing",
     "Groceries",
@@ -21,37 +25,35 @@ export default function Expenses() {
     "Take out",
     "Restaurant",
     "Vacation",
+    "Saving to bank",
     "Other",
   ];
-  const optionsPayment = ["Cash", "PIN", "Credit Card"];
+  const optionsPayment = ["Cash", "PIN", "Bank Statement"];
 
   const [inputValue, setInputValue] = useState("");
   const [inputValue2, setInputValue2] = useState("");
   const [inputValue3, setInputValue3] = useState("");
-  const [description, setDescription] = useState();
+  const [description, setDescription] = useState("");
   const [category, setCategory] = useState(optionsCategory[0]);
   const [payment_type, setPayment_type] = useState(optionsPayment[0]);
   const [date, setDate] = useState("");
   const [status, setStatus] = useState(optionsStatus[0]);
   const [amount, setAmount] = useState("");
-
-  useEffect(() => {
-    dispatch(fetchMe());
-  }, [dispatch]);
+  const [balance, setBalance] = useState("");
+  console.log(date);
 
   const columns = [
     { field: "description", headerName: "Description", width: 220 },
     { field: "date", headerName: "Date", width: 150 },
-    { field: "status", headerName: "Status", width: 150 },
+    { field: "status", headerName: "Needs/Wants", width: 150 },
     { field: "category", headerName: "Category", width: 150 },
     { field: "payment_type", headerName: "Payment Type", width: 150 },
     { field: "amount", headerName: "Amount", width: 150 },
   ];
 
-  const rows = user && user.expenses;
+  const rows = me;
 
   function submitForm(event) {
-    // console.log("input", name, content, imageUrl);
     event.preventDefault();
     dispatch(
       createExpense(description, date, amount, status, category, payment_type)
@@ -63,14 +65,75 @@ export default function Expenses() {
     setStatus("");
     setCategory("");
     setPayment_type("");
-    setInputValue("");
-    setInputValue2("");
-    setInputValue3("");
   }
 
   return (
     <div>
-      {user ? (
+      <div
+        style={{ marginTop: "30px", display: "flex", justifyContent: "center" }}
+      >
+        <div class="card p-3">
+          <div class="card-bottom pt-3 px-3 mb-2">
+            <div class="d-flex flex-row justify-content-between text-align-center">
+              <div class="d-flex flex-column">
+                <span>Starting balance</span>
+                <p>
+                  &euro; <span class="text-dark">{user?.balance}</span>
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <TextField
+                    id="outlined-basic"
+                    label="Change Balance"
+                    variant="outlined"
+                    size="small"
+                    type="number"
+                    onChange={(e) => {
+                      console.log("called, changing balance");
+                      setBalance(e.target.value);
+                    }}
+                  />
+                  <button
+                    style={{
+                      backgroundColor: "Black",
+                      color: "white",
+                      padding: "8px",
+                      width: "70px",
+                      textDecoration: "none",
+                      border: "none",
+                      borderRadius: "15px",
+                      margin: "10px",
+                      fontSize: "10px",
+                    }}
+                    onClick={() => dispatch(changeBalance(balance))}
+                  >
+                    Change
+                  </button>
+                </div>
+              </div>{" "}
+            </div>
+          </div>
+        </div>
+        <div class="card p-3">
+          <div class="card-bottom pt-3 px-3 mb-2">
+            <div class="d-flex flex-row justify-content-between text-align-center">
+              <div class="d-flex flex-column ">
+                <span>Balance Left</span>
+                <p>
+                  &euro;{" "}
+                  <span class="text-dark">{user.balance - totalSpend}</span>
+                </p>
+              </div>{" "}
+            </div>
+          </div>
+        </div>
+      </div>
+      {me ? (
         <div
           style={{
             display: "flex",
@@ -135,7 +198,9 @@ export default function Expenses() {
           id="controllable-states-demo"
           options={optionsStatus}
           sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Status" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Need/Want/Saving" />
+          )}
         />
       </div>
       <div
@@ -192,6 +257,7 @@ export default function Expenses() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          marginBottom: "100px",
         }}
       >
         <button
@@ -207,7 +273,7 @@ export default function Expenses() {
           }}
           onClick={submitForm}
         >
-          Submit
+          Add!
         </button>
       </div>
     </div>
