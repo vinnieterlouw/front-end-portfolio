@@ -1,11 +1,16 @@
-import { LOG_OUT, LOGIN_SUCCESS, TOKEN_STILL_VALID } from "./actions";
+import {
+  LOG_OUT,
+  LOGIN_SUCCESS,
+  TOKEN_STILL_VALID,
+  deleteExpense,
+} from "./actions";
 
 const initialState = {
   token: localStorage.getItem("token"),
   name: null,
   email: null,
   balance: null,
-  expenses: null,
+  expenses: [],
 };
 
 export default function reducer(state = initialState, action) {
@@ -24,7 +29,6 @@ export default function reducer(state = initialState, action) {
       return { ...state, ...action.payload };
 
     case "user/addExpense": {
-      console.log("add reducer", action.payload);
       return {
         ...state,
         expenses: [...state.expenses, action.payload],
@@ -34,6 +38,14 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         balance: action.payload.balance,
+      };
+    }
+
+    case "expense/expenseDeleted": {
+      console.log("deleteExpense");
+      return {
+        ...state,
+        expenses: [],
       };
     }
 

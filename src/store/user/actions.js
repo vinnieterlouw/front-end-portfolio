@@ -208,3 +208,28 @@ export const changeBalance = (balance) => {
     }
   };
 };
+
+export const expenseDeleted = () => ({
+  type: "expense/expenseDeleted",
+});
+
+export const deleteExpense = () => {
+  return async (dispatch, getState) => {
+    try {
+      const user = selectUser(getState());
+      const userId = user.id;
+      const response = await axios.delete(
+        `http://localhost:4000/expense/delete/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      dispatch(expenseDeleted());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};

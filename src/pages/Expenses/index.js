@@ -1,8 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { selectMe, selectUser } from "../../store/user/selectors";
-import { changeBalance, createExpense } from "../../store/user/actions";
+import {
+  changeBalance,
+  createExpense,
+  deleteExpense,
+} from "../../store/user/actions";
 import "../Expenses/expense.css";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { TextField } from "@mui/material";
@@ -21,11 +27,10 @@ export default function Expenses() {
     "Clothing",
     "Groceries",
     "House",
+    "Book to Savings Account",
+    "School",
+    "Personal Items",
     "Car",
-    "Take out",
-    "Restaurant",
-    "Vacation",
-    "Saving to bank",
     "Other",
   ];
   const optionsPayment = ["Cash", "PIN", "Bank Statement"];
@@ -34,13 +39,12 @@ export default function Expenses() {
   const [inputValue2, setInputValue2] = useState("");
   const [inputValue3, setInputValue3] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState(optionsCategory[0]);
-  const [payment_type, setPayment_type] = useState(optionsPayment[0]);
+  const [category, setCategory] = useState("");
+  const [payment_type, setPayment_type] = useState("");
   const [date, setDate] = useState("");
-  const [status, setStatus] = useState(optionsStatus[0]);
+  const [status, setStatus] = useState("");
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState("");
-  console.log(date);
 
   const columns = [
     { field: "description", headerName: "Description", width: 220 },
@@ -50,6 +54,37 @@ export default function Expenses() {
     { field: "payment_type", headerName: "Payment Type", width: 150 },
     { field: "amount", headerName: "Amount", width: 150 },
   ];
+
+  const downloadPdf = () => {
+    const doc = new jsPDF();
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const current = new Date();
+    const currentMonth = months[current.getMonth()];
+    doc.text(`Expenses ${currentMonth}`, 20, 10);
+    doc.autoTable({
+      theme: "striped",
+      columns: columns.map((col) => ({
+        ...col,
+        dataKey: col.field,
+        header: col.headerName,
+      })),
+      body: me,
+    });
+    doc.save("table.pdf");
+  };
 
   const rows = me;
 
@@ -124,7 +159,7 @@ export default function Expenses() {
             <div class="d-flex flex-row justify-content-between text-align-center">
               <div class="d-flex flex-column ">
                 <span>Balance Left</span>
-                <p>
+                <p class="d-flex flex-row justify-content-center text-align-center">
                   &euro;{" "}
                   <span class="text-dark">{user.balance - totalSpend}</span>
                 </p>
@@ -132,34 +167,70 @@ export default function Expenses() {
             </div>
           </div>
         </div>
-      </div>
-      {me ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              height: 400,
-              width: "60%",
-              marginTop: "20px",
-            }}
-          >
-            <DataGrid rows={rows} columns={columns} />
+        <div class="card p-3">
+          <div class="card-bottom pt-3 px-3 mb-2">
+            <div class="d-flex flex-row justify-content-center text-align-center">
+              <div class="d-flex flex-column ">
+                <span class="d-flex flex-row justify-content-center text-align-center">
+                  Export Expenses
+                </span>
+                <p>
+                  <button
+                    style={{
+                      backgroundColor: "Black",
+                      color: "white",
+                      padding: "8px",
+                      width: "200px",
+                      textDecoration: "none",
+                      border: "none",
+                      borderRadius: "15px",
+                      margin: "10px",
+                    }}
+                    onClick={() => downloadPdf()}
+                  >
+                    Export as PDF
+                  </button>
+                </p>
+              </div>{" "}
+            </div>
           </div>
         </div>
-      ) : (
-        "Loading..."
-      )}
+        <div class="card p-3">
+          <div class="card-bottom pt-3 px-3 mb-2">
+            <div class="d-flex flex-row justify-content-center text-align-center">
+              <div class="d-flex flex-column ">
+                <span class="d-flex flex-row justify-content-center text-align-center">
+                  Delete Expenses{" "}
+                </span>
+                <p>
+                  <button
+                    style={{
+                      backgroundColor: "Black",
+                      color: "white",
+                      padding: "8px",
+                      width: "200px",
+                      textDecoration: "none",
+                      border: "none",
+                      borderRadius: "15px",
+                      margin: "10px",
+                    }}
+                    onClick={() => dispatch(deleteExpense())}
+                  >
+                    Delete All
+                  </button>
+                </p>
+              </div>{" "}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div
         style={{
           justifyContent: "center",
           alignItems: "center",
           display: "flex",
-          marginTop: "40px",
+          marginTop: "10px",
         }}
       >
         {" "}
@@ -170,7 +241,7 @@ export default function Expenses() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginTop: "20px",
+          marginTop: "10px",
           flexDirection: "row",
         }}
       >
@@ -257,7 +328,7 @@ export default function Expenses() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: "100px",
+          marginBottom: "10px",
         }}
       >
         <button
@@ -276,6 +347,27 @@ export default function Expenses() {
           Add!
         </button>
       </div>
+      {me ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              height: 400,
+              width: "60%",
+              marginBottom: "15px",
+            }}
+          >
+            <DataGrid rows={rows} columns={columns} />
+          </div>
+        </div>
+      ) : (
+        "Loading..."
+      )}
     </div>
   );
 }

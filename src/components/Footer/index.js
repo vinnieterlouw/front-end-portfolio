@@ -23,10 +23,12 @@ export default function Footer() {
             <h6>Quick Links</h6>
             <ul class="footer-links">
               <li>
-                <a href="http://scanfcode.com/about/">About Us</a>
+                <a href="https://n26.com/en-eu/blog/50-30-20-rule#:~:text=The%2050%2F30%2F20%20rule%20is%20an%20easy%20budgeting%20method,savings%20or%20paying%20off%20debt.">
+                  About Us
+                </a>
               </li>
               <li>
-                <a href="http://scanfcode.com/contact/">Contact Us</a>
+                <a href="tel://+31623991759">Contact Us</a>
               </li>
               <li>
                 <a href="http://scanfcode.com/contribute-at-scanfcode/">

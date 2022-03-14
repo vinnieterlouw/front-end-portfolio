@@ -21,6 +21,8 @@
     "bootstrap": "^5.1.1",
     "chart.js": "^3.7.1",
     "faker": "^6.6.6",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.23",
     "ra-data-json-server": "^3.19.10",
     "react": "^17.0.2",
     "react-admin": "^3.19.10",
