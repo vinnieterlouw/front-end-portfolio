@@ -50,7 +50,7 @@ export default function Home() {
               can’t I save more?” The 50/30/20 rule is a great way to solve that
               age-old riddle and build more structure into your spending habits.
               It can make it easier to reach your financial goals, whether
-              you’re saving up for a rainy day or working to pay off debt.
+              you’re saving up for a rainy day or working to pay off your debt.
             </div>
           </div>
         </div>
