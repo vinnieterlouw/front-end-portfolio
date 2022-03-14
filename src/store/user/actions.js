@@ -226,7 +226,7 @@ export const deleteExpense = () => {
           },
         }
       );
-
+      console.log(response);
       dispatch(expenseDeleted());
     } catch (error) {
       console.log(error);
