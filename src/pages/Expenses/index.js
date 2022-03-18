@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { selectMe, selectUser } from "../../store/user/selectors";
 import {
   changeBalance,
@@ -10,6 +10,8 @@ import "../Expenses/expense.css";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
+import { useNavigate } from "react-router-dom";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { TextField } from "@mui/material";
 import { Autocomplete } from "@mui/material";
@@ -18,6 +20,7 @@ export default function Expenses() {
   const dispatch = useDispatch();
   const me = useSelector(selectMe);
   const user = useSelector(selectUser);
+  const navigate = useNavigate();
 
   const spendByUser = me?.map((user) => parseInt(user.amount));
   const totalSpend = spendByUser?.reduce((a, b) => a + b, 0);
@@ -54,6 +57,10 @@ export default function Expenses() {
     { field: "payment_type", headerName: "Payment Type", width: 150 },
     { field: "amount", headerName: "Amount", width: 150 },
   ];
+
+  useEffect(() => {
+    if (!user.email) navigate("/");
+  }, [user, navigate]);
 
   const downloadPdf = () => {
     const doc = new jsPDF();
@@ -132,6 +139,7 @@ export default function Expenses() {
                       console.log("called, changing balance");
                       setBalance(e.target.value);
                     }}
+                    value={balance}
                   />
                   <button
                     style={{
@@ -250,12 +258,14 @@ export default function Expenses() {
           label="Description"
           variant="outlined"
           onChange={(e) => setDescription(e.target.value)}
+          value={description}
         />
         <TextField
           id="outlined-basic"
           label="Date (YYYY-MM-DD)"
           variant="outlined"
           onChange={(e) => setDate(e.target.value)}
+          value={date}
         />
         <Autocomplete
           value={status}
@@ -321,6 +331,7 @@ export default function Expenses() {
             shrink: true,
           }}
           onChange={(e) => setAmount(e.target.value)}
+          value={amount}
         />
       </div>
       <div
