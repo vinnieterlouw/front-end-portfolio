@@ -1,5 +1,4 @@
-import { apiUrl } from "../../config/constants";
-import axios from "axios";
+import myAxios from "../axios";
 import { selectToken } from "./selectors";
 import {
   appLoading,
@@ -32,7 +31,7 @@ export const signUp = (name, email, password) => {
   return async (dispatch, getState) => {
     dispatch(appLoading());
     try {
-      const response = await axios.post(`${apiUrl}/auth/signup`, {
+      const response = await myAxios.post(`/auth/signup`, {
         name,
         email,
         password,
@@ -58,7 +57,7 @@ export const login = (email, password) => {
   return async (dispatch, getState) => {
     dispatch(appLoading());
     try {
-      const response = await axios.post(`${apiUrl}/auth/login`, {
+      const response = await myAxios.post(`/auth/login`, {
         email,
         password,
       });
@@ -91,7 +90,7 @@ export const getUserWithStoredToken = () => {
     try {
       // if we do have a token,
       // check wether it is still valid or if it is expired
-      const response = await axios.get(`${apiUrl}/auth/me`, {
+      const response = await myAxios.get(`$/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -152,8 +151,8 @@ export const createExpense = (
     try {
       const user = selectUser(getState());
       const userId = user.id;
-      const response = await axios.post(
-        `http://localhost:4000/expense/post/${userId}`,
+      const response = await myAxios.post(
+        `/expense/post/${userId}`,
         { description, date, amount, status, category, payment_type },
         {
           headers: {
@@ -189,8 +188,8 @@ export const changeBalance = (balance) => {
       console.log("Getting to the action");
       const user = selectUser(getState());
       const userId = user.id;
-      const response = await axios.patch(
-        `http://localhost:4000/expense/editbalance/${userId}`,
+      const response = await myAxios.patch(
+        `/expense/editbalance/${userId}`,
         { balance },
         {
           headers: {
@@ -218,14 +217,11 @@ export const deleteExpense = () => {
     try {
       const user = selectUser(getState());
       const userId = user.id;
-      const response = await axios.delete(
-        `http://localhost:4000/expense/delete/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await myAxios.delete(`/expense/delete/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       console.log(response);
       dispatch(expenseDeleted());
     } catch (error) {
