@@ -136,6 +136,7 @@ export default function Expenses() {
 
     setBalance("");
   }
+
   return (
     <div>
       <div
