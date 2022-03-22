@@ -11,7 +11,14 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 import { useNavigate } from "react-router-dom";
-
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { TextField } from "@mui/material";
 import { Autocomplete } from "@mui/material";
@@ -38,6 +45,7 @@ export default function Expenses() {
   ];
   const optionsPayment = ["Cash", "PIN", "Bank Statement"];
 
+  const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [inputValue2, setInputValue2] = useState("");
   const [inputValue3, setInputValue3] = useState("");
@@ -61,6 +69,19 @@ export default function Expenses() {
   useEffect(() => {
     if (!user.email) navigate("/");
   }, [user, navigate]);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCloseDelete = () => {
+    dispatch(deleteExpense());
+    setOpen(false);
+  };
 
   const downloadPdf = () => {
     const doc = new jsPDF();
@@ -210,8 +231,8 @@ export default function Expenses() {
                 <span class="d-flex flex-row justify-content-center text-align-center">
                   Delete Expenses{" "}
                 </span>
-                <p>
-                  <button
+                <div>
+                  <Button
                     style={{
                       backgroundColor: "Black",
                       color: "white",
@@ -222,11 +243,33 @@ export default function Expenses() {
                       borderRadius: "15px",
                       margin: "10px",
                     }}
-                    onClick={() => dispatch(deleteExpense())}
+                    onClick={handleClickOpen}
                   >
-                    Delete All
-                  </button>
-                </p>
+                    DELETE ALL
+                  </Button>
+                  <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                  >
+                    <DialogTitle id="alert-dialog-title">
+                      {"Are you sure you want to delete?"}
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+                        Click delete to permently delete you expenses, click
+                        cancel to stop and go back!
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseDelete}>Delete</Button>
+                      <Button onClick={handleClose} autoFocus>
+                        Cancel
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </div>
               </div>{" "}
             </div>
           </div>
