@@ -18,9 +18,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  TextField,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { TextField } from "@mui/material";
 import { Autocomplete } from "@mui/material";
 
 export default function Expenses() {
@@ -130,6 +130,12 @@ export default function Expenses() {
     setPayment_type("");
   }
 
+  function submitBalanceChange(event) {
+    event.preventDefault();
+    dispatch(changeBalance(balance));
+
+    setBalance("");
+  }
   return (
     <div>
       <div
@@ -157,7 +163,6 @@ export default function Expenses() {
                     size="small"
                     type="number"
                     onChange={(e) => {
-                      console.log("called, changing balance");
                       setBalance(e.target.value);
                     }}
                     value={balance}
@@ -174,7 +179,7 @@ export default function Expenses() {
                       margin: "10px",
                       fontSize: "10px",
                     }}
-                    onClick={() => dispatch(changeBalance(balance))}
+                    onClick={submitBalanceChange}
                   >
                     Change
                   </button>
@@ -304,11 +309,16 @@ export default function Expenses() {
           value={description}
         />
         <TextField
-          id="outlined-basic"
-          label="Date (YYYY-MM-DD)"
-          variant="outlined"
-          onChange={(e) => setDate(e.target.value)}
+          id="date"
+          label="Date"
+          type="date"
           value={date}
+          onChange={(e) => setDate(e.target.value)}
+          defaultValue="22/02/2022"
+          sx={{ width: 220 }}
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
         <Autocomplete
           value={status}
