@@ -176,7 +176,7 @@ export default function Expenses() {
                       width: "70px",
                       textDecoration: "none",
                       border: "none",
-                      borderRadius: "15px",
+                      borderRadius: "10px",
                       margin: "10px",
                       fontSize: "10px",
                     }}
