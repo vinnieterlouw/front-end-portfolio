@@ -1,5 +1,5 @@
 import "../Footer/footer.css";
-import { Facebook, Twitter, LinkedIn, Instagram } from "@material-ui/icons";
+import { LinkedIn, GitHub } from "@material-ui/icons";
 
 export default function Footer() {
   return (
@@ -55,22 +55,15 @@ export default function Footer() {
           <div class="col-md-4 col-sm-6 col-xs-12">
             <ul class="social-icons">
               <li>
-                <a class="facebook" href="https://www.facebook.com/">
-                  <Facebook />
+                <a class="dribbble" href="https://github.com/vinnieterlouw">
+                  <GitHub />{" "}
                 </a>
               </li>
               <li>
-                <a class="twitter" href="https://twitter.com/?lang=nl">
-                  <Twitter />
-                </a>
-              </li>
-              <li>
-                <a class="dribbble" href="https://www.instagram.com/">
-                  <Instagram />{" "}
-                </a>
-              </li>
-              <li>
-                <a class="linkedin" href="https://nl.linkedin.com/">
+                <a
+                  class="linkedin"
+                  href="https://nl.linkedin.com/in/vinnie-terlouw-7a775a133"
+                >
                   <LinkedIn />
                 </a>
               </li>

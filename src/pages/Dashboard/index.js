@@ -142,6 +142,7 @@ export default function Dashboard() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          marginTop: "40px",
         }}
       >
         <h1>
@@ -154,6 +155,7 @@ export default function Dashboard() {
           flexDirection: "row",
           justifyContent: "center",
           alignItems: "center",
+          marginTop: "110px",
         }}
       >
         <div
